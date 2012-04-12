@@ -178,6 +178,9 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
                         System.exit(0);
                     }
                 });
+                
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
             }
         });

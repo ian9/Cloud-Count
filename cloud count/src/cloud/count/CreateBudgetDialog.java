@@ -1,8 +1,11 @@
 package cloud.count;
 
+import badm.Budget;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -20,6 +23,8 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
     {
         initCreateBudgetIncomeTable();
         initCreateBudgetExpendituresTable();
+        
+        
     }
     
     protected void initCreateBudgetIncomeTable()
@@ -123,6 +128,8 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
     public void editEntry(int row)
     {
         SublineUpdateDialog dialog = new SublineUpdateDialog(null, true);
+        // Center Dialog
+        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
 
@@ -142,8 +149,6 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
         descriptionTextArea = new javax.swing.JTextArea();
         StartsLabel = new javax.swing.JLabel();
         endsLabel = new javax.swing.JLabel();
-        startDateTextField = new javax.swing.JTextField();
-        endDateTextField = new javax.swing.JTextField();
         cancelButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
         incomePanel = new javax.swing.JPanel();
@@ -162,15 +167,15 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
         expendituresRemoveLineButton1 = new javax.swing.JButton();
         expendituresSublineUpButton = new javax.swing.JButton();
         expendituresSublineDownButton = new javax.swing.JButton();
-        startDateButton = new javax.swing.JButton();
-        endDateButton = new javax.swing.JButton();
         rollLabel = new javax.swing.JLabel();
         rollComboBox = new javax.swing.JComboBox();
+        startsDateChooser = new datechooser.beans.DateChooserCombo();
+        endsDateChooser = new datechooser.beans.DateChooserCombo();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cloud Count >> Create Budget");
         setBackground(new java.awt.Color(204, 204, 204));
-        setPreferredSize(new java.awt.Dimension(535, 610));
+        setPreferredSize(new java.awt.Dimension(530, 575));
 
         descriptionTextArea.setColumns(20);
         descriptionTextArea.setRows(5);
@@ -180,14 +185,6 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
         StartsLabel.setText("Starts:");
 
         endsLabel.setText("Ends:");
-
-        startDateTextField.setEditable(false);
-        startDateTextField.setText("dd / mm / yyyy");
-        startDateTextField.setEnabled(false);
-
-        endDateTextField.setEditable(false);
-        endDateTextField.setText("dd / mm / yyyy");
-        endDateTextField.setEnabled(false);
 
         cancelButton.setText("Cancel");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -305,13 +302,24 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
                 .addContainerGap())
         );
 
-        startDateButton.setText("Select Start Date");
-
-        endDateButton.setText("Select End Date");
-
         rollLabel.setText("Roll:");
 
         rollComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Weekly", "Bi Weekly", "Monthly" }));
+
+        startsDateChooser.setCalendarPreferredSize(new java.awt.Dimension(350, 180));
+        try {
+            startsDateChooser.setDefaultPeriods(new datechooser.model.multiple.PeriodSet());
+        } catch (datechooser.model.exeptions.IncompatibleDataExeption e1) {
+            e1.printStackTrace();
+        }
+        startsDateChooser.setLocale(new java.util.Locale("en", "GB", ""));
+
+        try {
+            endsDateChooser.setDefaultPeriods(new datechooser.model.multiple.PeriodSet());
+        } catch (datechooser.model.exeptions.IncompatibleDataExeption e1) {
+            e1.printStackTrace();
+        }
+        endsDateChooser.setLocale(new java.util.Locale("en", "GB", ""));
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -323,43 +331,33 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
                     .add(layout.createSequentialGroup()
                         .add(expendituresPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(0, 0, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(layout.createSequentialGroup()
-                                        .add(38, 38, 38)
-                                        .add(StartsLabel))
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, rollLabel)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, endsLabel))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(layout.createSequentialGroup()
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                            .add(startDateTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(endDateTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(startDateButton)
-                                            .add(endDateButton)))
-                                    .add(rollComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                            .add(layout.createSequentialGroup()
-                                .add(44, 44, 44)
-                                .add(titleLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(titleTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 382, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(layout.createSequentialGroup()
-                                .add(descriptionLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(descriptionScrollPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 382, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(incomePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(38, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(0, 0, Short.MAX_VALUE)
                         .add(saveButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(cancelButton)
-                        .add(32, 32, 32))))
+                        .add(32, 32, 32))
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(incomePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                    .add(titleLabel)
+                                    .add(StartsLabel)
+                                    .add(descriptionLabel)
+                                    .add(endsLabel)
+                                    .add(rollLabel))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(titleTextField)
+                                    .add(descriptionScrollPanel)
+                                    .add(layout.createSequentialGroup()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(rollComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(endsDateChooser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(startsDateChooser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                        .add(0, 0, Short.MAX_VALUE)))))
+                        .addContainerGap(38, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -372,20 +370,21 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(descriptionScrollPanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(descriptionLabel))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(18, 18, 18)
+                        .add(StartsLabel))
+                    .add(layout.createSequentialGroup()
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(startsDateChooser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(endsDateChooser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, endsLabel))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(startDateTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(StartsLabel)
-                    .add(startDateButton))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(endsLabel)
-                    .add(endDateTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(endDateButton))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(rollLabel)
-                    .add(rollComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(rollComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(rollLabel))
                 .add(18, 18, 18)
                 .add(incomePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
@@ -394,14 +393,33 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(cancelButton)
                     .add(saveButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO add your handling code here:
+        
+        // Should everything be in the SwingUtilities.invokeLater?
+        
+        // Create Budget object
+        Budget budget = new Budget();
+        budget.commit();
+        // Set the description of budget
+        budget.setDescription(descriptionTextArea.getText());
+        // Set the name of budget
+        budget.setName(titleTextField.getText());
+        // Commit the budget
+        System.out.println("Budget has been added: " + budget.commit());
+        
+        // Show confirmation
+        JOptionPane.showMessageDialog(null, "New Budget Saved!");
+        // Close window
+        budget = null;
+        dispose();
+            
+        
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -458,6 +476,8 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
                     }
                 });
         
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
             }
         });
@@ -468,8 +488,7 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane descriptionScrollPanel;
     private javax.swing.JTextArea descriptionTextArea;
-    private javax.swing.JButton endDateButton;
-    private javax.swing.JTextField endDateTextField;
+    private datechooser.beans.DateChooserCombo endsDateChooser;
     private javax.swing.JLabel endsLabel;
     private javax.swing.JButton expendituresAddLineButton;
     private javax.swing.JPanel expendituresPanel;
@@ -490,8 +509,7 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
     private javax.swing.JComboBox rollComboBox;
     private javax.swing.JLabel rollLabel;
     private javax.swing.JButton saveButton;
-    private javax.swing.JButton startDateButton;
-    private javax.swing.JTextField startDateTextField;
+    private datechooser.beans.DateChooserCombo startsDateChooser;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTextField;
     // End of variables declaration//GEN-END:variables

@@ -1,36 +1,40 @@
 package cloud.count;
 
-import java.awt.Cursor;
+import badm.Budget;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.jcr.Node;
-import javax.jcr.Repository;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import javax.swing.*;
-
-import org.apache.jackrabbit.rmi.repository.URLRemoteRepository;
 
 public final class EditBudgetDialog extends javax.swing.JDialog {
     
-    JackRabbitHandler jrh;
+    static JackRabbitHandler jrh;
     int rightClickedRow;
+
+     static Budget budget;
     /**
      * Creates new form EditBudget
      */
-    public EditBudgetDialog(java.awt.Frame parent, boolean modal) 
+    public EditBudgetDialog(java.awt.Frame parent, boolean modal, JackRabbitHandler jrh, Budget budget) 
     {
         super(parent, modal);
-        jrh = new JackRabbitHandler("http://localhost:8080/rmi", "admin", "admin");
+        this.jrh = jrh;
         rightClickedRow = 0;
         initComponents();
         init();
+        
+        // Get the selected budget
+        this.budget = budget;
+        // Display the Budget's Title
+        this.setTitle("Cloud Count >> Edit Budget >> " + budget.getName());
+        
+        // Display the Budget's Description
+        descriptionTextArea.setText(budget.getDescription());
     }
     
     protected void init()
@@ -156,6 +160,8 @@ public final class EditBudgetDialog extends javax.swing.JDialog {
     public void editEntry(int row)
     {
         UpdateLineDialog dialog = new UpdateLineDialog(null, true);
+        // Center Dialog
+        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
     
@@ -200,6 +206,8 @@ public final class EditBudgetDialog extends javax.swing.JDialog {
                             EBAttachmentsTableModel model = (EBAttachmentsTableModel) attachmentsTable.getModel();
                             DownloadAttachmentDialog dialog = new DownloadAttachmentDialog(null, true,
                             jrh,(String)model.getValueAt(attachmentsTable.rowAtPoint(mouse.getPoint()), 2));
+                            // Center Dialog
+                            dialog.setLocationRelativeTo(null);
                             dialog.setVisible(true);
                             model.refresh();      
                         }
@@ -605,7 +613,15 @@ public final class EditBudgetDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO add your handling code here:
+        
+        // Save the changes to the description
+        budget.setDescription(descriptionTextArea.getText());
+        budget.commit();
+        
+        // Show confirmation
+        JOptionPane.showMessageDialog(null, "Budget has been Saved!");
+        // Close window
+        dispose();
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void uploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadButtonActionPerformed
@@ -620,6 +636,8 @@ public final class EditBudgetDialog extends javax.swing.JDialog {
                 //startWaitCursor(null);
                 UploadAttachmentDialog dialog = new UploadAttachmentDialog(parent, true, jrh);
                 dialog.setVisible(true);
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 EBAttachmentsTableModel model = (EBAttachmentsTableModel) attachmentsTable.getModel();
                 model.refresh();
                 //stopWaitCursor(null);
@@ -639,6 +657,8 @@ public final class EditBudgetDialog extends javax.swing.JDialog {
                 EBAttachmentsTableModel model = (EBAttachmentsTableModel) attachmentsTable.getModel();
                 DeleteDocumentConfirmationDialog dialog = new DeleteDocumentConfirmationDialog(null, true,
                         jrh,(String)model.getValueAt(rightClickedRow, 2));
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
                 model.refresh();
                 //stopWaitCursor(null);
@@ -661,6 +681,8 @@ public final class EditBudgetDialog extends javax.swing.JDialog {
                 EBAttachmentsTableModel model = (EBAttachmentsTableModel) attachmentsTable.getModel();
                 DownloadAttachmentDialog dialog = new DownloadAttachmentDialog(null, true,
                         jrh,(String)model.getValueAt(rightClickedRow, 2));
+                // Center Dialog
+//                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
                 model.refresh();           
             }
@@ -706,7 +728,7 @@ public final class EditBudgetDialog extends javax.swing.JDialog {
 
             @Override
             public void run() {
-                EditBudgetDialog dialog = new EditBudgetDialog(new javax.swing.JFrame(), true);
+                EditBudgetDialog dialog = new EditBudgetDialog(new javax.swing.JFrame(), true,jrh, budget);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 
                     @Override
@@ -714,6 +736,9 @@ public final class EditBudgetDialog extends javax.swing.JDialog {
                         System.exit(0);
                     }
                 });
+                
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
             }
         });

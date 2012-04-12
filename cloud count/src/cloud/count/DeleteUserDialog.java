@@ -125,6 +125,8 @@ public class DeleteUserDialog extends javax.swing.JDialog {
             public void run()
             {
                 DeleteUserConfirmationDialog dialog = new DeleteUserConfirmationDialog(null, true);
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
                 // This is a location for post porcessing after cloasing a window
             }
@@ -176,6 +178,8 @@ public class DeleteUserDialog extends javax.swing.JDialog {
                         System.exit(0);
                     }
                 });
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
             }
         });

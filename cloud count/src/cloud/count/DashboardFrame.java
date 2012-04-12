@@ -1,7 +1,9 @@
 package cloud.count;
 
+import badm.Budget;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -12,15 +14,21 @@ import javax.swing.table.TableColumnModel;
 public final class DashboardFrame extends javax.swing.JFrame 
 {
     JackRabbitHandler jrh;
+    int rightClickedRow = 0;
+    int doubleClickedRow = 0;
+    
     public DashboardFrame() 
     {
         initComponents();
         init();
+        // Center JFrame
+        this.setLocationRelativeTo(null);
     }
     
     protected void init()
     {
         initDashboardTable();
+        //eventually you will log in with your own credentials
         jrh = new JackRabbitHandler("http://localhost:8080/rmi",
                 "admin", "admin");
     }
@@ -66,6 +74,7 @@ public final class DashboardFrame extends javax.swing.JFrame
                     JTable target = (JTable) e.getSource();
 
                     final int row = target.getSelectedRow() + 1;
+                    doubleClickedRow = target.getSelectedRow();
 
                     SwingUtilities.invokeLater(new Runnable() 
                     {
@@ -82,6 +91,7 @@ public final class DashboardFrame extends javax.swing.JFrame
                 // http://stackoverflow.com/questions/766956/how-do-i-create-a-right-click-context-menu-in-java-swing
                 if (e.getButton() == 3)
                 {
+                    rightClickedRow = dashboardTable.rowAtPoint(e.getPoint());
                     rightClickPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                     
                 }
@@ -92,10 +102,14 @@ public final class DashboardFrame extends javax.swing.JFrame
     
     public void editEntry(int row)
     {
-        System.out.println("Row " + row + " clicked");
+        ArrayList<Budget> budgets = Budget.all();
+        Budget budget = budgets.get(doubleClickedRow);
         
+        System.out.println("Row " + row + " clicked");
         final JFrame parent = this;
-        EditBudgetDialog dialog = new EditBudgetDialog(parent, true);
+        EditBudgetDialog dialog = new EditBudgetDialog(parent, false,jrh, budget);
+        // Center Dialog
+        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
 
@@ -110,6 +124,7 @@ public final class DashboardFrame extends javax.swing.JFrame
 
         rightClickPopupMenu = new javax.swing.JPopupMenu();
         editBudgetMenuItem = new javax.swing.JMenuItem();
+        deleteBudget = new javax.swing.JMenuItem();
         dashboardScrollPane = new javax.swing.JScrollPane();
         dashboardTable = new javax.swing.JTable();
         exitButton = new javax.swing.JButton();
@@ -140,12 +155,12 @@ public final class DashboardFrame extends javax.swing.JFrame
         helpMenu = new javax.swing.JMenu();
 
         rightClickPopupMenu.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
-                rightClickPopupMenuPopupMenuWillBecomeVisible(evt);
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
             public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
             }
-            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+                rightClickPopupMenuPopupMenuWillBecomeVisible(evt);
             }
         });
 
@@ -156,6 +171,14 @@ public final class DashboardFrame extends javax.swing.JFrame
             }
         });
         rightClickPopupMenu.add(editBudgetMenuItem);
+
+        deleteBudget.setText("Delete Budget");
+        deleteBudget.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBudgetActionPerformed(evt);
+            }
+        });
+        rightClickPopupMenu.add(deleteBudget);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cloud Count >> Dashboard");
@@ -267,6 +290,11 @@ public final class DashboardFrame extends javax.swing.JFrame
         budgetsMenu.add(createBudgetMenuItem);
 
         deleteBudgetMenuItem.setText("Delete Budget");
+        deleteBudgetMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBudgetMenuItemActionPerformed(evt);
+            }
+        });
         budgetsMenu.add(deleteBudgetMenuItem);
 
         modifyBudgetMenuItem.setText("Modify Budget");
@@ -337,8 +365,11 @@ public final class DashboardFrame extends javax.swing.JFrame
             public void run()
             {
                 CreateBudgetDialog dialog = new CreateBudgetDialog(parent, true);
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
                 // This is a location for post porcessing after cloasing a window
+                dialog.dispose();
             }
         });
     }//GEN-LAST:event_createBudgetMenuItemActionPerformed
@@ -356,7 +387,12 @@ public final class DashboardFrame extends javax.swing.JFrame
             @Override
             public void run()
             {
-                EditBudgetDialog dialog = new EditBudgetDialog(parent, true);
+                
+                ArrayList<Budget> budgets = Budget.all();
+                Budget budget = budgets.get(doubleClickedRow);
+                EditBudgetDialog dialog = new EditBudgetDialog(parent, true,jrh, budget);
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
                 // This is a location for post porcessing after cloasing a window
             }
@@ -377,6 +413,8 @@ public final class DashboardFrame extends javax.swing.JFrame
             public void run()
             {
                 DeleteUserDialog dialog = new DeleteUserDialog(parent, true);
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
                 // This is a location for post porcessing after cloasing a window
             }
@@ -393,6 +431,8 @@ public final class DashboardFrame extends javax.swing.JFrame
             public void run()
             {
                 ModifyUserDialog dialog = new ModifyUserDialog(parent, true);
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
                 // This is a location for post porcessing after cloasing a window
             }
@@ -409,11 +449,43 @@ public final class DashboardFrame extends javax.swing.JFrame
             public void run()
             {
                 AddUserDialog dialog = new AddUserDialog(parent, true);
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
                 // This is a location for post porcessing after cloasing a window
             }
         });
     }//GEN-LAST:event_addUserMenuItemActionPerformed
+
+    private void deleteBudgetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBudgetActionPerformed
+      
+        // Does this need to be in a SwingUtilities.invokeLater??
+        ArrayList<Budget> budgets = Budget.all();
+        Budget budget = budgets.get(rightClickedRow);
+        Integer budgetID = budget.getId();
+                
+        Budget.find(budgetID).delete();
+        
+        // Auto refresh
+        DashboardTableModel dashboardModel = (DashboardTableModel)dashboardTable.getModel();
+        dashboardModel.refresh();
+    }//GEN-LAST:event_deleteBudgetActionPerformed
+
+    private void deleteBudgetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBudgetMenuItemActionPerformed
+        
+        final JFrame parent = this;
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                DeleteBudgetDialog dialog = new DeleteBudgetDialog(parent, true);
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_deleteBudgetMenuItemActionPerformed
 
     public void winClose() 
     {
@@ -496,6 +568,7 @@ public final class DashboardFrame extends javax.swing.JFrame
     private javax.swing.JMenuBar dashboardMenuBar;
     private javax.swing.JScrollPane dashboardScrollPane;
     private javax.swing.JTable dashboardTable;
+    private javax.swing.JMenuItem deleteBudget;
     private javax.swing.JMenuItem deleteBudgetMenuItem;
     private javax.swing.JMenuItem deleteUserMenuItem;
     private javax.swing.JMenuItem editBudgetMenuItem;

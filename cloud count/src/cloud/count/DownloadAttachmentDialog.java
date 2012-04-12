@@ -170,7 +170,7 @@ public class DownloadAttachmentDialog extends javax.swing.JDialog {
     }
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         dispose();
-        System.out.println("DploadAttachmentDialog has been closed.");
+        System.out.println("DownloadAttachmentDialog has been closed.");
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     /**
@@ -219,6 +219,8 @@ public class DownloadAttachmentDialog extends javax.swing.JDialog {
                         System.exit(0);
                     }
                 });
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
             }
         });

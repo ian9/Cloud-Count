@@ -2,11 +2,6 @@ package cloud.count;
 
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
-import javax.jcr.Node;
-import javax.jcr.Repository;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import org.apache.jackrabbit.rmi.repository.URLRemoteRepository;
 
 
 public class EBAttachmentsTableModel extends AbstractTableModel
@@ -19,18 +14,14 @@ public class EBAttachmentsTableModel extends AbstractTableModel
         "Document Name"
 
     };
-    public EBAttachmentsTableModel(){
+    
+    public EBAttachmentsTableModel()
+    {
         attachmentsData = new ArrayList();
         populateData();
     }
-    private ArrayList<String[]> attachmentsData;
-//    = new ArrayList(); 
-//    {
-//        "24 / 12 / 2011",
-//        "Bob",
-//        "Estimate",
-//        "JoeEstimate.doc"
-//    };    
+    
+    private ArrayList<String[]> attachmentsData; 
     
     private JackRabbitHandler jrh = new JackRabbitHandler("http://localhost:8080/rmi",
                 "admin", "admin");//has admin because all it does is grab info

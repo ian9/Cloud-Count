@@ -1,14 +1,14 @@
 package cloud.count;
 
+import badm.Budget;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.table.AbstractTableModel;
 
 public class DashboardTableModel extends AbstractTableModel
 {
-    /**
-     * This will be information from the database eventually
-     */
-    
+   ArrayList<Budget> budgets;
+
     private Random rand = new Random();
     
     private String[] columnNames = 
@@ -33,19 +33,7 @@ public class DashboardTableModel extends AbstractTableModel
         "N / A",
         "N / A",
         "N / A"
-    };
-    
-    private String[] data2 = 
-    {
-        "11",
-        "24/12/2011",
-        "APPROVED",
-        "Budget for 2011",
-        "950.00",
-        "948.00",
-        "+ 2.00",
-        "+ 0.21"
-    };    
+    }; 
 
     @Override
     public String getColumnName(int col) 
@@ -56,7 +44,10 @@ public class DashboardTableModel extends AbstractTableModel
     @Override
     public int getRowCount() 
     {
-        return 2;
+        if(budgets == null){
+            budgets = Budget.all();
+        }
+        return budgets.size();
     }
 
     @Override
@@ -68,16 +59,22 @@ public class DashboardTableModel extends AbstractTableModel
     @Override
     public Object getValueAt(int row, int column) 
     {
-        if(row == 0)
-            return data1[column];
-        else
-            return data2[column];
+            System.out.println(budgets.size());
+            Budget budget = budgets.get(row);    
+            if (column == 0)
+                return budget.getId();
+            if(column == 3)
+                return budget.getName();      
+            return data1 [column];
     }
     
     public void refresh()
     {
-        data1[0] = rand.nextInt(10000) + "";
-        this.fireTableDataChanged(); // Tells our table the data has changed
+        // Query for all budgets
+        budgets.clear();
+        budgets = Budget.all();
+        // Update table
+        this.fireTableDataChanged();
     }
     
     public Boolean isNew(int row) 
@@ -86,8 +83,6 @@ public class DashboardTableModel extends AbstractTableModel
         
         if(row == 0)
             id = Integer.parseInt(data1[0]);
-        else
-            id  = Integer.parseInt(data2[0]);
         
         return id % 2 == 0;
     }

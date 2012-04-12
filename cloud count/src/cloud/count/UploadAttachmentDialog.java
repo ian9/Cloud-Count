@@ -5,7 +5,6 @@
 package cloud.count;
 
 import java.awt.Cursor;
-import java.awt.Frame;
 import java.io.File;
 import javax.swing.*;
 
@@ -24,6 +23,7 @@ public class UploadAttachmentDialog extends javax.swing.JDialog {
         super(parent, modal);
         this.jrh = jrh;
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -48,8 +48,6 @@ public class UploadAttachmentDialog extends javax.swing.JDialog {
         setName("UploadAttachment");
 
         fileNameLabel.setText("File Name:");
-
-        fileNameTextField.setEditable(false);
 
         browseButton.setLabel("Browse");
         browseButton.addActionListener(new java.awt.event.ActionListener() {
@@ -169,7 +167,8 @@ public class UploadAttachmentDialog extends javax.swing.JDialog {
             }
         } else {
             JOptionPane.showMessageDialog(null, "There are one or more errors"
-                    + " in your label fields. Make sure it is only alphanumeric");
+                    + " in your label fields. Make sure it is only alphanumeric"
+                    + "and there are no sequential /s");
         }
         stopWaitCursor(uploadButton);
 
@@ -177,10 +176,18 @@ public class UploadAttachmentDialog extends javax.swing.JDialog {
 
     private boolean testLabel() {
         char[] label = labelTextField.getText().toCharArray();
+        boolean oneSlash = false;//tests to make sure that something like // does not exist
         for (char c : label) {
             if (c != '/' && !Character.isLetterOrDigit(c)) {
                 return false;
             }
+            if(c=='/' && !oneSlash)
+                oneSlash=true;
+            else if(c=='/'&&oneSlash)
+                return false;
+            else
+                oneSlash=false;
+                    
         }
         return true;
     }
@@ -253,6 +260,9 @@ public class UploadAttachmentDialog extends javax.swing.JDialog {
                         System.exit(0);
                     }
                 });
+                
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
             }
         });
