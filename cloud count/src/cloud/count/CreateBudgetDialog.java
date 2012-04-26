@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public final class CreateBudgetDialog extends javax.swing.JDialog 
 {   
     Budget budget;
+    private final static Integer firstLineNumber = 100;
     
     public CreateBudgetDialog(java.awt.Frame parent, boolean modal) 
     {
@@ -477,16 +478,12 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
 
     private void expendituresAddLineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expendituresAddLineButtonActionPerformed
         Line line = (Line) budget.createLine();
-        line.setIncome(false);
-        
-        line.setName(
-                JOptionPane.showInputDialog("Please enter line name."));
-        line.setGoal(
-                Double.parseDouble(JOptionPane.showInputDialog("Please enter total.")));
-        line.setNumber(
-                Integer.parseInt(JOptionPane.showInputDialog("Please enter lineNumber")));
-        line.setTotal(0.0);
+        line.setIncome(false);        
+        line.setNumber(findLineNumber(BridgeConstants.Side.EXPENDITURE));
         line.commit();
+        SublineUpdateDialog dialog = new SublineUpdateDialog(null, true, line);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
         CBExpendituresTableModel model = (CBExpendituresTableModel) expendituresTable.getModel();
         model.refresh();
     }//GEN-LAST:event_expendituresAddLineButtonActionPerformed
@@ -501,6 +498,17 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
         System.out.println("ROW:"+row);
         return (Line) budget.fetchLines(side).get(row); 
     }
+    /**
+     * calculates the next logical line number
+     * @param side the side on which the line will be added
+     * @return the next line number
+     */
+    private Integer findLineNumber(Side side){
+        return    firstLineNumber
+                + (budget.fetchLines(side).size()
+                * firstLineNumber);
+    }
+    
     public static void main(String args[]) 
     {
         /*

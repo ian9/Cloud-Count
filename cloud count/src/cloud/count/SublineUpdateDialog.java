@@ -57,6 +57,11 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
         sublineUpdateSeparator = new javax.swing.JSeparator();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        lineNameTextField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        lineBudgetTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cloud Count >> Subline Update");
@@ -77,13 +82,38 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
         });
 
         saveButton.setText("Save");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Sublines:");
+
+        jLabel2.setText("Line Name:");
+
+        lineNameTextField.setText("Name");
+        lineNameTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lineNameTextFieldActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Line Budget:");
+
+        lineBudgetTextField.setText("0.0");
+        lineBudgetTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lineBudgetTextFieldActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(0, 232, Short.MAX_VALUE)
+                .add(0, 0, Short.MAX_VALUE)
                 .add(saveButton)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(cancelButton))
@@ -91,24 +121,47 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
+                        .add(sublineUpdateSeparator)
+                        .addContainerGap())
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(0, 0, Short.MAX_VALUE)
                         .add(addSublineButton)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(deleteSublineButton))
-                    .add(sublineUpdateScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .add(sublineUpdateSeparator))
-                .addContainerGap())
+                        .add(deleteSublineButton)
+                        .add(12, 12, 12))))
+            .add(layout.createSequentialGroup()
+                .add(18, 18, 18)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jLabel1)
+                    .add(sublineUpdateScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 443, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(layout.createSequentialGroup()
+                        .add(jLabel2)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(lineNameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(18, 18, 18)
+                        .add(jLabel3)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(lineBudgetTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 72, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                .add(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel2)
+                    .add(lineNameTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel3)
+                    .add(lineBudgetTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 29, Short.MAX_VALUE)
+                .add(jLabel1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(sublineUpdateScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 84, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(addSublineButton)
-                    .add(deleteSublineButton))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, addSublineButton)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, deleteSublineButton))
+                .add(18, 18, 18)
                 .add(sublineUpdateSeparator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(4, 4, 4)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -121,8 +174,23 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         dispose();
-        System.out.println("SublineUpdateDialog has been closed.");
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void lineBudgetTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineBudgetTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lineBudgetTextFieldActionPerformed
+
+    private void lineNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNameTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lineNameTextFieldActionPerformed
+
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        line.setName(lineNameTextField.getText());
+        line.setGoal(Double.parseDouble(
+                lineBudgetTextField.getText()));
+        line.commit();
+        dispose();
+    }//GEN-LAST:event_saveButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -181,6 +249,11 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
     private javax.swing.JButton addSublineButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteSublineButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JTextField lineBudgetTextField;
+    private javax.swing.JTextField lineNameTextField;
     private javax.swing.JButton saveButton;
     private javax.swing.JScrollPane sublineUpdateScrollPane;
     private javax.swing.JSeparator sublineUpdateSeparator;
