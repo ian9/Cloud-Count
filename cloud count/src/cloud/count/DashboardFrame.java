@@ -17,6 +17,8 @@ public final class DashboardFrame extends javax.swing.JFrame
     int rightClickedRow = 0;
     int doubleClickedRow = 0;
     
+    JTable dTable;
+    
     public DashboardFrame() 
     {
         initComponents();
@@ -97,7 +99,8 @@ public final class DashboardFrame extends javax.swing.JFrame
                 }
             }
         });
-
+        
+        dTable = dashboardTable;
     }
     
     public void editEntry(int row)
@@ -124,7 +127,6 @@ public final class DashboardFrame extends javax.swing.JFrame
 
         rightClickPopupMenu = new javax.swing.JPopupMenu();
         editBudgetMenuItem = new javax.swing.JMenuItem();
-        deleteBudget = new javax.swing.JMenuItem();
         dashboardScrollPane = new javax.swing.JScrollPane();
         dashboardTable = new javax.swing.JTable();
         exitButton = new javax.swing.JButton();
@@ -171,14 +173,6 @@ public final class DashboardFrame extends javax.swing.JFrame
             }
         });
         rightClickPopupMenu.add(editBudgetMenuItem);
-
-        deleteBudget.setText("Delete Budget");
-        deleteBudget.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteBudgetActionPerformed(evt);
-            }
-        });
-        rightClickPopupMenu.add(deleteBudget);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cloud Count >> Dashboard");
@@ -281,6 +275,7 @@ public final class DashboardFrame extends javax.swing.JFrame
 
         budgetsMenu.setText("Budgets");
 
+        createBudgetMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         createBudgetMenuItem.setText("Create Budget");
         createBudgetMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -289,6 +284,7 @@ public final class DashboardFrame extends javax.swing.JFrame
         });
         budgetsMenu.add(createBudgetMenuItem);
 
+        deleteBudgetMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
         deleteBudgetMenuItem.setText("Delete Budget");
         deleteBudgetMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -297,7 +293,13 @@ public final class DashboardFrame extends javax.swing.JFrame
         });
         budgetsMenu.add(deleteBudgetMenuItem);
 
+        modifyBudgetMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         modifyBudgetMenuItem.setText("Modify Budget");
+        modifyBudgetMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifyBudgetMenuItemActionPerformed(evt);
+            }
+        });
         budgetsMenu.add(modifyBudgetMenuItem);
 
         adminMenu.add(budgetsMenu);
@@ -370,6 +372,9 @@ public final class DashboardFrame extends javax.swing.JFrame
                 dialog.setVisible(true);
                 // This is a location for post porcessing after cloasing a window
                 dialog.dispose();
+                // Post processing refresh
+                DashboardTableModel dashboardModel = (DashboardTableModel)dashboardTable.getModel();
+                dashboardModel.refresh();
             }
         });
     }//GEN-LAST:event_createBudgetMenuItemActionPerformed
@@ -416,7 +421,6 @@ public final class DashboardFrame extends javax.swing.JFrame
                 // Center Dialog
                 dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
-                // This is a location for post porcessing after cloasing a window
             }
         });
     }//GEN-LAST:event_deleteUserMenuItemActionPerformed
@@ -457,20 +461,6 @@ public final class DashboardFrame extends javax.swing.JFrame
         });
     }//GEN-LAST:event_addUserMenuItemActionPerformed
 
-    private void deleteBudgetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBudgetActionPerformed
-      
-        // Does this need to be in a SwingUtilities.invokeLater??
-        ArrayList<Budget> budgets = Budget.all();
-        Budget budget = budgets.get(rightClickedRow);
-        Integer budgetID = budget.getId();
-                
-        Budget.find(budgetID).delete();
-        
-        // Auto refresh
-        DashboardTableModel dashboardModel = (DashboardTableModel)dashboardTable.getModel();
-        dashboardModel.refresh();
-    }//GEN-LAST:event_deleteBudgetActionPerformed
-
     private void deleteBudgetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBudgetMenuItemActionPerformed
         
         final JFrame parent = this;
@@ -483,9 +473,33 @@ public final class DashboardFrame extends javax.swing.JFrame
                 // Center Dialog
                 dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
+                
+                // Post processing refresh
+                DashboardTableModel dashboardModel = (DashboardTableModel)dashboardTable.getModel();
+                dashboardModel.refresh();
             }
         });
     }//GEN-LAST:event_deleteBudgetMenuItemActionPerformed
+
+    private void modifyBudgetMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyBudgetMenuItemActionPerformed
+        final JFrame parent = this;
+        
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                
+                ArrayList<Budget> budgets = Budget.all();
+                Budget budget = budgets.get(doubleClickedRow);
+                EditBudgetDialog dialog = new EditBudgetDialog(parent, true,jrh, budget);
+                // Center Dialog
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
+                // This is a location for post porcessing after cloasing a window
+            }
+        });
+    }//GEN-LAST:event_modifyBudgetMenuItemActionPerformed
 
     public void winClose() 
     {
@@ -568,7 +582,6 @@ public final class DashboardFrame extends javax.swing.JFrame
     private javax.swing.JMenuBar dashboardMenuBar;
     private javax.swing.JScrollPane dashboardScrollPane;
     private javax.swing.JTable dashboardTable;
-    private javax.swing.JMenuItem deleteBudget;
     private javax.swing.JMenuItem deleteBudgetMenuItem;
     private javax.swing.JMenuItem deleteUserMenuItem;
     private javax.swing.JMenuItem editBudgetMenuItem;

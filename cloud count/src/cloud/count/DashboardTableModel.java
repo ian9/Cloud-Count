@@ -26,10 +26,10 @@ public class DashboardTableModel extends AbstractTableModel
     private String[] data1 = 
     {
         "6",
-        "24/01/2012",
+        "12/04/2012",
         "DRAFT",
         "Budget for 2012",
-        "1,000.00",
+        "N / A",
         "N / A",
         "N / A",
         "N / A"

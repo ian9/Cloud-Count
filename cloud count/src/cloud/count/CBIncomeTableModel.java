@@ -1,23 +1,34 @@
 package cloud.count;
 
+import badm.Budget;
+import badm.Line;
+import cc.test.bridge.BridgeConstants;
+import cc.test.bridge.LineInterface;
+import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
 public class CBIncomeTableModel extends AbstractTableModel
 {
+    ArrayList<LineInterface> lines;
+    Budget budget;
+    
     private String[] columnNames = 
     {
         "Line #", 
         "Sublines", 
         "Name", 
-        "Budget"
+        "Budget",
+        "Actual"
     };
     
     private String[] incomeData = 
     {
         "100",
-        "1",
+        "0",
         "N/A",
+        "0.00",
         "0.00"
+           
     };
 
     @Override
@@ -28,8 +39,16 @@ public class CBIncomeTableModel extends AbstractTableModel
     
     @Override
     public int getRowCount() 
-    {
-        return 1;
+    {   
+        if(lines == null && budget != null)
+        {
+            lines = budget.fetchLines(BridgeConstants.Side.INCOME);
+        }
+        else if(budget == null)
+        {
+            return 0;
+        }
+        return lines.size();
     }
 
     @Override
@@ -41,11 +60,30 @@ public class CBIncomeTableModel extends AbstractTableModel
     @Override
     public Object getValueAt(int row, int column) 
     {
-            return incomeData[column];
+        System.out.println(lines.size());
+        
+        Line line = (Line)lines.get(row);    
+        if(column == 0)
+            return line.getNumber();
+        if(column == 2)
+            return line.getName();
+        if(column == 3)
+            return line.getGoal();
+        if(column == 4)
+            return line.getTotal();
+        
+        return incomeData [column];
     }
     
     public void refresh()
     {
+        lines.clear();
+        lines = budget.fetchLines(BridgeConstants.Side.INCOME);
         this.fireTableDataChanged(); // Tells our table the data has changed
+    }
+    
+    public void setBudget(Budget budget)
+    {
+        this.budget = budget;
     }
 }

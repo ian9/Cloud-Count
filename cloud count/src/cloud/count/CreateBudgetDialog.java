@@ -1,6 +1,9 @@
 package cloud.count;
 
 import badm.Budget;
+import badm.Line;
+import cc.test.bridge.BridgeConstants;
+import cc.test.bridge.LineInterface;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
@@ -8,27 +11,36 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import cloud.count.DashboardFrame;
+import java.util.ArrayList;
 
 public final class CreateBudgetDialog extends javax.swing.JDialog 
-{
+{   
+    Budget budget;
     
     public CreateBudgetDialog(java.awt.Frame parent, boolean modal) 
     {
         super(parent, modal);
+        budget = new Budget();
+        budget.commit();
+        System.out.println("New Budgets ID:"+budget.getId());
         initComponents();
         init();
     }
     
     protected void init()
     {
+
         initCreateBudgetIncomeTable();
         initCreateBudgetExpendituresTable();
-        
+
         
     }
     
     protected void initCreateBudgetIncomeTable()
     {
+        CBIncomeTableModel model = (CBIncomeTableModel) incomeTable.getModel();
+        model.setBudget(budget);
         /**
          * This code will automate the width of the columns
          * on our dashboard table
@@ -70,10 +82,13 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
                 }
             }
         });
+        
     }
     
     protected void initCreateBudgetExpendituresTable()
     {
+       CBExpendituresTableModel model = (CBExpendituresTableModel) expendituresTable.getModel();
+       model.setBudget(budget);
         /**
          * This code will automate the width of the columns
          * on our dashboard table
@@ -209,8 +224,18 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
         incomeScrollPane.setViewportView(incomeTable);
 
         incomeRemoveLineButton.setText("-");
+        incomeRemoveLineButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                incomeRemoveLineButtonActionPerformed(evt);
+            }
+        });
 
         incomeAddLineButton.setText("+");
+        incomeAddLineButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                incomeAddLineButtonActionPerformed(evt);
+            }
+        });
 
         incomeSublineUpButton.setText("Up");
 
@@ -261,6 +286,11 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
         expendituresScrollPane.setViewportView(expendituresTable);
 
         expendituresAddLineButton.setText("+");
+        expendituresAddLineButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expendituresAddLineButtonActionPerformed(evt);
+            }
+        });
 
         expendituresRemoveLineButton1.setText("-");
 
@@ -400,12 +430,7 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        
-        // Should everything be in the SwingUtilities.invokeLater?
-        
-        // Create Budget object
-        Budget budget = new Budget();
-        budget.commit();
+
         // Set the description of budget
         budget.setDescription(descriptionTextArea.getText());
         // Set the name of budget
@@ -418,14 +443,54 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
         // Close window
         budget = null;
         dispose();
-            
-        
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        budget.delete();
         dispose();
         System.out.println("CreateBudgetDialog has been closed.");
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void incomeAddLineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomeAddLineButtonActionPerformed
+        Line line = (Line) budget.createLine();
+        line.setIncome(true);
+        
+        line.setName(
+                JOptionPane.showInputDialog("Please enter line name."));
+        line.setGoal(
+                Double.parseDouble(JOptionPane.showInputDialog("Please enter total.")));
+        line.setNumber(
+                Integer.parseInt(JOptionPane.showInputDialog("Please enter lineNumber")));
+        line.setTotal(0.0);
+        line.commit();
+        CBIncomeTableModel model = (CBIncomeTableModel) incomeTable.getModel();
+        model.refresh();
+    }//GEN-LAST:event_incomeAddLineButtonActionPerformed
+
+    private void expendituresAddLineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expendituresAddLineButtonActionPerformed
+        Line line = (Line) budget.createLine();
+        line.setIncome(false);
+        
+        line.setName(
+                JOptionPane.showInputDialog("Please enter line name."));
+        line.setGoal(
+                Double.parseDouble(JOptionPane.showInputDialog("Please enter total.")));
+        line.setNumber(
+                Integer.parseInt(JOptionPane.showInputDialog("Please enter lineNumber")));
+        line.setTotal(0.0);
+        line.commit();
+        CBExpendituresTableModel model = (CBExpendituresTableModel) expendituresTable.getModel();
+        model.refresh();
+    }//GEN-LAST:event_expendituresAddLineButtonActionPerformed
+
+    private void incomeRemoveLineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomeRemoveLineButtonActionPerformed
+        ArrayList<LineInterface> lines = budget.fetchLines(BridgeConstants.Side.INCOME);  
+        int row = incomeTable.getSelectedRow();
+        Line line = (Line) lines.get(row);
+        line.delete();
+        CBIncomeTableModel model = (CBIncomeTableModel) incomeTable.getModel();
+        model.refresh();
+    }//GEN-LAST:event_incomeRemoveLineButtonActionPerformed
     
     public static void main(String args[]) 
     {
