@@ -1,14 +1,17 @@
 package cloud.count;
 
+import badm.Line;
 import javax.swing.table.TableColumn;
 
 public final class SublineUpdateDialog extends javax.swing.JDialog {
 
+    private static Line line;
     /**
      * Creates new form SublineUpdate
      */
-    public SublineUpdateDialog(java.awt.Frame parent, boolean modal) {
+    public SublineUpdateDialog(java.awt.Frame parent, boolean modal, Line line) {
         super(parent, modal);
+        this.line = line;
         initComponents();
         init();
     }
@@ -54,8 +57,6 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
         sublineUpdateSeparator = new javax.swing.JSeparator();
-        sublineUpdateUpButton = new javax.swing.JButton();
-        sublineUpdateDownButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cloud Count >> Subline Update");
@@ -77,10 +78,6 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
 
         saveButton.setText("Save");
 
-        sublineUpdateUpButton.setText("Up");
-
-        sublineUpdateDownButton.setText("Down");
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -94,10 +91,7 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(sublineUpdateUpButton)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(sublineUpdateDownButton)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(0, 0, Short.MAX_VALUE)
                         .add(addSublineButton)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(deleteSublineButton))
@@ -113,9 +107,7 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(addSublineButton)
-                    .add(deleteSublineButton)
-                    .add(sublineUpdateUpButton)
-                    .add(sublineUpdateDownButton))
+                    .add(deleteSublineButton))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(sublineUpdateSeparator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(4, 4, 4)
@@ -170,7 +162,7 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
 
             @Override
             public void run() {
-                SublineUpdateDialog dialog = new SublineUpdateDialog(new javax.swing.JFrame(), true);
+                SublineUpdateDialog dialog = new SublineUpdateDialog(new javax.swing.JFrame(), true, line);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 
                     @Override
@@ -190,10 +182,8 @@ public final class SublineUpdateDialog extends javax.swing.JDialog {
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deleteSublineButton;
     private javax.swing.JButton saveButton;
-    private javax.swing.JButton sublineUpdateDownButton;
     private javax.swing.JScrollPane sublineUpdateScrollPane;
     private javax.swing.JSeparator sublineUpdateSeparator;
     private javax.swing.JTable sublineUpdateTable;
-    private javax.swing.JButton sublineUpdateUpButton;
     // End of variables declaration//GEN-END:variables
 }

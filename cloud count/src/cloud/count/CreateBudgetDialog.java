@@ -3,6 +3,7 @@ package cloud.count;
 import badm.Budget;
 import badm.Line;
 import cc.test.bridge.BridgeConstants;
+import cc.test.bridge.BridgeConstants.Side;
 import cc.test.bridge.LineInterface;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -69,14 +70,14 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
                 {
                     JTable target = (JTable) e.getSource();
 
-                    final int row = target.getSelectedRow() + 1;
+                    final int row = target.getSelectedRow();
 
                     SwingUtilities.invokeLater(new Runnable() 
                     {
                         @Override
                         public void run() 
                         {
-                            editEntry(row);
+                            editIncomeEntry(row);
                         }
                     });
                 }
@@ -120,14 +121,14 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
                 {
                     JTable target = (JTable) e.getSource();
 
-                    final int row = target.getSelectedRow() + 1;
+                    final int row = target.getSelectedRow();
 
                     SwingUtilities.invokeLater(new Runnable() 
                     {
                         @Override
                         public void run() 
                         {
-                            editEntry(row);
+                            editExpendituresEntry(row);
                         }
                     });
                 }
@@ -140,10 +141,24 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
      * is double clicked -> Bringing up the SublineUpdateDialog 
      * @param row that is being edited
      */
-    public void editEntry(int row)
+    public void editExpendituresEntry(int row)
     {
-        SublineUpdateDialog dialog = new SublineUpdateDialog(null, true);
-        // Center Dialog
+        Line line = getLine(row, BridgeConstants.Side.EXPENDITURE);
+        SublineUpdateDialog dialog = new SublineUpdateDialog(null, true, line);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+    }
+    
+     /**
+     * This method is the action performed when one of the Create Budget tables
+     * is double clicked -> Bringing up the SublineUpdateDialog 
+     * @param row that is being edited
+     */
+    public void editIncomeEntry(int row)
+    {
+        System.out.println("Editing an income entry line thing");
+        Line line = getLine(row , BridgeConstants.Side.INCOME);
+        SublineUpdateDialog dialog = new SublineUpdateDialog(null, true, line);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
@@ -430,17 +445,10 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-
-        // Set the description of budget
         budget.setDescription(descriptionTextArea.getText());
-        // Set the name of budget
-        budget.setName(titleTextField.getText());
-        // Commit the budget
+        budget.setName(titleTextField.getText());   
         System.out.println("Budget has been added: " + budget.commit());
-        
-        // Show confirmation
         JOptionPane.showMessageDialog(null, "New Budget Saved!");
-        // Close window
         budget = null;
         dispose();
     }//GEN-LAST:event_saveButtonActionPerformed
@@ -484,14 +492,15 @@ public final class CreateBudgetDialog extends javax.swing.JDialog
     }//GEN-LAST:event_expendituresAddLineButtonActionPerformed
 
     private void incomeRemoveLineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomeRemoveLineButtonActionPerformed
-        ArrayList<LineInterface> lines = budget.fetchLines(BridgeConstants.Side.INCOME);  
         int row = incomeTable.getSelectedRow();
-        Line line = (Line) lines.get(row);
-        line.delete();
+        getLine(row, BridgeConstants.Side.INCOME).delete();
         CBIncomeTableModel model = (CBIncomeTableModel) incomeTable.getModel();
         model.refresh();
     }//GEN-LAST:event_incomeRemoveLineButtonActionPerformed
-    
+    private Line getLine(int row, Side side){
+        System.out.println("ROW:"+row);
+        return (Line) budget.fetchLines(side).get(row); 
+    }
     public static void main(String args[]) 
     {
         /*
